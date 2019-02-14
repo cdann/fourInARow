@@ -13,6 +13,7 @@
 		1E2AE06B22157BAC00170D1A /* fourinrowexperience.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1E2AE06922157BAC00170D1A /* fourinrowexperience.xcdatamodeld */; };
 		1E2AE06D22157BAD00170D1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E2AE06C22157BAD00170D1A /* Assets.xcassets */; };
 		1E2AE07022157BAD00170D1A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2AE06E22157BAD00170D1A /* LaunchScreen.storyboard */; };
+		1E2AE0782215A95000170D1A /* BoardCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2AE0772215A95000170D1A /* BoardCollectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		1E2AE06C22157BAD00170D1A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E2AE06F22157BAD00170D1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E2AE07122157BAD00170D1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1E2AE0772215A95000170D1A /* BoardCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCollectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				1E2AE06222157BAC00170D1A /* AppDelegate.swift */,
 				1E2AE06422157BAC00170D1A /* ViewController.swift */,
 				1E2AE06622157BAC00170D1A /* Main.storyboard */,
+				1E2AE0772215A95000170D1A /* BoardCollectionViewController.swift */,
 				1E2AE06C22157BAD00170D1A /* Assets.xcassets */,
 				1E2AE06E22157BAD00170D1A /* LaunchScreen.storyboard */,
 				1E2AE07122157BAD00170D1A /* Info.plist */,
@@ -139,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E2AE06B22157BAC00170D1A /* fourinrowexperience.xcdatamodeld in Sources */,
+				1E2AE0782215A95000170D1A /* BoardCollectionViewController.swift in Sources */,
 				1E2AE06522157BAC00170D1A /* ViewController.swift in Sources */,
 				1E2AE06322157BAC00170D1A /* AppDelegate.swift in Sources */,
 			);
