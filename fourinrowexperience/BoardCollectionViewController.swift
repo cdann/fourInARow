@@ -8,40 +8,50 @@
 
 import UIKit
 
+//class BoardCell: UICollectionViewCell {
+//    @IBOutlet weak var indication : UILabel!
+//}
+
 class BoardCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
-    
-    @IBOutlet weak var collectionview: UICollectionView!
+    @IBOutlet weak var collectionview : UICollectionView!
+    var viewModel : BoardCollectionModelView? {
+        didSet {
+            if self.isViewLoaded {
+                viewModel?.onChange = { self.collectionview.reloadData() }
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionview.delegate = self
         collectionview.dataSource = self
-        // Do any additional setup after loading the view, typically from a nib.
+        if let viewModel = self.viewModel {
+            viewModel.onChange = { self.collectionview.reloadData() }
+        }
+        self.collectionview.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return section == 1 ? 42 : 7
+        return Board.numberOfLines + 1
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return Board.numberOfRows
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let identifier = indexPath.section == 1 ? "emptyCell" : "redArrow"
+        let identifier = indexPath.row > 0 ? "emptyCell" : "redArrow"
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
+        if indexPath.row > 0, let cellSetup = self.viewModel?.output[indexPath.section][indexPath.row - 1] {
+            cell.backgroundColor = cellSetup.color
+        }
         return cell
     }
     
-    // override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        //        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-        //
-        //        // Configure the cell
-        //        cell.backgroundColor = UIColor(named: "blue grid")
-        //
-        //        return cell
-        //    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel?.playInCell(section: indexPath.section, index: indexPath.row)
+    }
     
 }
