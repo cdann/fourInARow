@@ -7,14 +7,20 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class MainViewController: UIViewController {
     @IBOutlet weak var playerTurnLabel : UILabel!
     @IBOutlet weak var playerTurnView : UIView!
     var childController : BoardCollectionViewController?
+    let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         self.displayAlert()
     }
     
@@ -46,23 +52,24 @@ class MainViewController: UIViewController {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addTextField { (textfield) in
             textfield.placeholder = "Player one pseudo"
-            textfield.text = self.childController?.viewModel?.input.playerNames[0]
+            //textfield.text = self.childController?.viewModel?.input.playerNames[0]
         }
         alertController.addTextField { (textfield) in
             textfield.placeholder = "Player two pseudo"
-            textfield.text = self.childController?.viewModel?.input.playerNames[1]
+            //textfield.text = self.childController?.viewModel?.input.playerNames[1]
         }
         alertController.addAction(UIAlertAction(title: "Let's play", style: .default, handler: { [unowned self] (action) in
             let pseudo1Field = alertController.textFields![0]
             let pseudo2Field = alertController.textFields![1]
             let board = self.initBoard(player1: pseudo1Field.text ?? "Player 1", player2: pseudo2Field.text ?? "Player 2")
-            self.childController?.viewModel = BoardCollectionModelView(input: board)
-            let playerDetails = board.getCurrentUserDetails()
-            self.playerTurnLabel.text = "\(playerDetails.pseudo), your turn"
-            self.playerTurnView.backgroundColor = playerDetails.color
-            self.playerTurnLabel.textColor = playerDetails.color
-            self.childController?.collectionview.reloadData()
-            // self.childController?.viewModel?.input = self.initBoard(player1: pseudo1Field.text ?? "player one")
+            let viewModel = BoardCollectionViewModel(board: board)
+            viewModel.input.asObservable().subscribe(onNext: { (board) in
+                let playerDetails = board.getCurrentUserDetails()
+                self.playerTurnView.backgroundColor = playerDetails.color
+                self.playerTurnLabel.text = playerDetails.pseudo
+                self.playerTurnLabel.textColor = playerDetails.labelColor
+            }).disposed(by: self.disposeBag)
+            self.childController?.setViewModel(viewModel: viewModel)
         }))
         if cancel {
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

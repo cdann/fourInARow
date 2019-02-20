@@ -7,51 +7,38 @@
 //
 
 import UIKit
+import RxSwift
+import RxDataSources
 
-//class BoardCell: UICollectionViewCell {
-//    @IBOutlet weak var indication : UILabel!
-//}
 
-class BoardCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class BoardCollectionViewController: UIViewController, UICollectionViewDelegate {
 
     @IBOutlet weak var collectionview : UICollectionView!
-    var viewModel : BoardCollectionModelView? {
-        didSet {
-            if self.isViewLoaded {
-                viewModel?.onChange = { self.collectionview.reloadData() }
-            }
+    let disposeBag = DisposeBag()
+    let datasource: RxCollectionViewSectionedReloadDataSource<SectionOfPiece> = RxCollectionViewSectionedReloadDataSource<SectionOfPiece>(
+        configureCell: { (dataSource, collectionView, indexPath, pieceSetUp) -> UICollectionViewCell in
+        let identifier = indexPath.row > 0 ? "emptyCell" : "redArrow"
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
+        if indexPath.row > 0{
+            cell.backgroundColor = pieceSetUp.color == nil ? UIColor.clear : UIColor(named: pieceSetUp.color!)
         }
+        return cell
+    })
+    var datasObservable: Observable<[SectionOfPiece]> = Observable.just([])
+    
+    func setViewModel(viewModel: BoardCollectionViewModel) {
+        let datasObservable = viewModel.output.asObservable()
+        let reactiveCollection: Reactive<UICollectionView> = self.collectionview.rx
+        datasObservable.bind(to: reactiveCollection.items(dataSource: datasource)).disposed(by: disposeBag)
+        reactiveCollection.itemSelected.subscribe(onNext: { [weak self] indexPath in
+            viewModel.input.value = viewModel.input.value.play(asSource: indexPath.section)
+        }).disposed(by: disposeBag)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionview.delegate = self
-        collectionview.dataSource = self
-        if let viewModel = self.viewModel {
-            viewModel.onChange = { self.collectionview.reloadData() }
-        }
-        self.collectionview.reloadData()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Board.numberOfLines + 1
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return Board.numberOfRows
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let identifier = indexPath.row > 0 ? "emptyCell" : "redArrow"
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
-        if indexPath.row > 0, let cellSetup = self.viewModel?.output[indexPath.section][indexPath.row - 1] {
-            cell.backgroundColor = cellSetup.color
-        }
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel?.playInCell(section: indexPath.section, index: indexPath.row)
     }
     
 }
+

@@ -8,27 +8,27 @@
 
 import UIKit
 
-enum PieceState {
+enum PieceColor {
     case yellowCell
     case redCell
     case emptyCell
 }
 
 class Board {
-    var playerNames : [String]
-    var yellowTurn : Bool = false
-    var rows : [[PieceState]]
     static let numberOfRows = 7
     static let numberOfLines = 6
-    var winCells : [(row : Int, line : Int)] = []
     
+    var playerNames : [String]
+    var yellowTurn : Bool = false
+    var rows : [[PieceColor]]
+    var winCells : [(row : Int, line : Int)] = []
     let onTurnChange : (String, UIColor, UIColor) -> ()
     let onWin : ((String, UIColor) -> ())?
     
     init(player1 : String = "player1", player2 : String = "player2", onTurnChange: @escaping (String, UIColor, UIColor) -> (), onWin : @escaping (String, UIColor) -> ()) {
-        rows = Array.init(repeating: 1, count: Board.numberOfRows).map({ (_) -> [PieceState] in
-            return Array.init(repeating: 1, count: Board.numberOfLines).map({ (_) -> PieceState in
-                return PieceState.emptyCell
+        rows = Array.init(repeating: 1, count: Board.numberOfRows).map({ (_) -> [PieceColor] in
+            return Array.init(repeating: 1, count: Board.numberOfLines).map({ (_) -> PieceColor in
+                return PieceColor.emptyCell
             })
         })
         playerNames = [player1, player2]
@@ -36,21 +36,24 @@ class Board {
         self.onWin = onWin
     }
     
-    // player1 : player[0] yellowTurn(false) red
-    // player2 : player[1] yellowTurn(true) yellow
-    func getCurrentUserPiece() -> PieceState {
-        return yellowTurn ? .yellowCell : .redCell
+    init(source: Board){
+        playerNames = source.playerNames
+        yellowTurn = source.yellowTurn
+        rows = source.rows
+        winCells = source.winCells
+        onWin = source.onWin
+        onTurnChange = source.onTurnChange
     }
     
-    func getCurrentUserPseudo() -> String {
-        return yellowTurn ? playerNames[1] : playerNames[0]
-    }
-    
-    func getCurrentUserDetails() -> (pseudo: String, color: UIColor, labelColor: UIColor) {
-        let pseudoIndex = yellowTurn ? 1 : 0
-        let colorName = yellowTurn ? "player yellow" : "player red"
-        let labelColor = yellowTurn ? UIColor(named: "neutral grey") : UIColor.white
-        return (pseudo: playerNames[pseudoIndex], color: UIColor(named: colorName)!, labelColor : labelColor!)
+    init(){
+        playerNames = ["", ""]
+        rows = Array.init(repeating: 1, count: Board.numberOfRows).map({ (_) -> [PieceColor] in
+            return Array.init(repeating: 1, count: Board.numberOfLines).map({ (_) -> PieceColor in
+                return PieceColor.emptyCell
+            })
+        })
+        onWin = {(_, _) in return}
+        onTurnChange = {(_, _, _) in return}
     }
     
     func play(rowIndex:Int) {
@@ -70,6 +73,45 @@ class Board {
         yellowTurn = !yellowTurn
         let userDetails = getCurrentUserDetails()
         onTurnChange(userDetails.pseudo, userDetails.color, userDetails.labelColor)
+    }
+    
+    
+    func play(asSource rowIndex:Int) -> Board {
+        var lowestemptyIndex : Int?
+        let board = Board(source: self)
+        for cell in rows[rowIndex] {
+            if cell != .emptyCell {
+                break
+            }
+            lowestemptyIndex = lowestemptyIndex == nil ? 0 : lowestemptyIndex! + 1
+        }
+        guard let lowestIndex = lowestemptyIndex else {
+            return self
+        }
+        board.rows[rowIndex][lowestIndex] = self.getCurrentUserPiece()
+        board.checkWin(posPlay: (row:rowIndex, line:lowestIndex))
+        
+        board.yellowTurn = !yellowTurn
+        let userDetails = getCurrentUserDetails()
+        board.onTurnChange(userDetails.pseudo, userDetails.color, userDetails.labelColor)
+        return board
+    }
+    
+    // player1 : player[0] yellowTurn(false) red
+    // player2 : player[1] yellowTurn(true) yellow
+    func getCurrentUserPiece() -> PieceColor {
+        return yellowTurn ? .yellowCell : .redCell
+    }
+    
+    func getCurrentUserPseudo() -> String {
+        return yellowTurn ? playerNames[1] : playerNames[0]
+    }
+    
+    func getCurrentUserDetails() -> (pseudo: String, color: UIColor, labelColor: UIColor) {
+        let pseudoIndex = yellowTurn ? 1 : 0
+        let colorName = yellowTurn ? "player yellow" : "player red"
+        let labelColor = yellowTurn ? UIColor(named: "neutral grey") : UIColor.white
+        return (pseudo: playerNames[pseudoIndex], color: UIColor(named: colorName)!, labelColor : labelColor!)
     }
     
     //Check victory
