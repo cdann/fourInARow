@@ -14,11 +14,13 @@
 		1E2AE07022157BAD00170D1A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2AE06E22157BAD00170D1A /* LaunchScreen.storyboard */; };
 		1E2AE0782215A95000170D1A /* BoardCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2AE0772215A95000170D1A /* BoardCollectionViewController.swift */; };
 		1E2AE07B2215BCD500170D1A /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2AE07A2215BCD500170D1A /* Board.swift */; };
-		1E2AE0812215CBCB00170D1A /* BoardCollectionModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2AE0802215CBCB00170D1A /* BoardCollectionModelView.swift */; };
+		1E2AE0812215CBCB00170D1A /* BoardCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2AE0802215CBCB00170D1A /* BoardCollectionViewModel.swift */; };
 		1E2AE085221709EE00170D1A /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2AE084221709EE00170D1A /* MainViewController.swift */; };
+		31505ACDB8640E9EE3A9BE11 /* Pods_fourinrowexperience.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D42DDE3E8B356AC0B79C2206 /* Pods_fourinrowexperience.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07999711BA3D13C9F1829996 /* Pods-fourinrowexperience.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fourinrowexperience.release.xcconfig"; path = "Pods/Target Support Files/Pods-fourinrowexperience/Pods-fourinrowexperience.release.xcconfig"; sourceTree = "<group>"; };
 		1E2AE05F22157BAC00170D1A /* fourinrowexperience.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fourinrowexperience.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E2AE06222157BAC00170D1A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E2AE06722157BAC00170D1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -28,8 +30,10 @@
 		1E2AE07122157BAD00170D1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E2AE0772215A95000170D1A /* BoardCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCollectionViewController.swift; sourceTree = "<group>"; };
 		1E2AE07A2215BCD500170D1A /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
-		1E2AE0802215CBCB00170D1A /* BoardCollectionModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCollectionModelView.swift; sourceTree = "<group>"; };
+		1E2AE0802215CBCB00170D1A /* BoardCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCollectionViewModel.swift; sourceTree = "<group>"; };
 		1E2AE084221709EE00170D1A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		D42DDE3E8B356AC0B79C2206 /* Pods_fourinrowexperience.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_fourinrowexperience.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC882444080EBA1F321B4C05 /* Pods-fourinrowexperience.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fourinrowexperience.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fourinrowexperience/Pods-fourinrowexperience.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31505ACDB8640E9EE3A9BE11 /* Pods_fourinrowexperience.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +53,8 @@
 			children = (
 				1E2AE06122157BAC00170D1A /* fourinrowexperience */,
 				1E2AE06022157BAC00170D1A /* Products */,
+				FE82D8624731FE9023DCD7F0 /* Pods */,
+				3C84D5E5D145117ACCE15FDD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,7 +69,7 @@
 		1E2AE06122157BAC00170D1A /* fourinrowexperience */ = {
 			isa = PBXGroup;
 			children = (
-				1E2AE07F2215CBBE00170D1A /* ModelView */,
+				1E2AE07F2215CBBE00170D1A /* ViewModel */,
 				1E2AE0792215BCC600170D1A /* Model */,
 				1E2AE06222157BAC00170D1A /* AppDelegate.swift */,
 				1E2AE06622157BAC00170D1A /* Main.storyboard */,
@@ -84,12 +91,29 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		1E2AE07F2215CBBE00170D1A /* ModelView */ = {
+		1E2AE07F2215CBBE00170D1A /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				1E2AE0802215CBCB00170D1A /* BoardCollectionModelView.swift */,
+				1E2AE0802215CBCB00170D1A /* BoardCollectionViewModel.swift */,
 			);
-			path = ModelView;
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		3C84D5E5D145117ACCE15FDD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D42DDE3E8B356AC0B79C2206 /* Pods_fourinrowexperience.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FE82D8624731FE9023DCD7F0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EC882444080EBA1F321B4C05 /* Pods-fourinrowexperience.debug.xcconfig */,
+				07999711BA3D13C9F1829996 /* Pods-fourinrowexperience.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,9 +123,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E2AE07422157BAD00170D1A /* Build configuration list for PBXNativeTarget "fourinrowexperience" */;
 			buildPhases = (
+				56782B4C35C1DA6D002A79BC /* [CP] Check Pods Manifest.lock */,
 				1E2AE05B22157BAC00170D1A /* Sources */,
 				1E2AE05C22157BAC00170D1A /* Frameworks */,
 				1E2AE05D22157BAC00170D1A /* Resources */,
+				9B30A5F550972D12FC98DDBB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -158,6 +184,61 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		56782B4C35C1DA6D002A79BC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-fourinrowexperience-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9B30A5F550972D12FC98DDBB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-fourinrowexperience/Pods-fourinrowexperience-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
+				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-fourinrowexperience/Pods-fourinrowexperience-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1E2AE05B22157BAC00170D1A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -165,7 +246,7 @@
 			files = (
 				1E2AE07B2215BCD500170D1A /* Board.swift in Sources */,
 				1E2AE06B22157BAC00170D1A /* fourinrowexperience.xcdatamodeld in Sources */,
-				1E2AE0812215CBCB00170D1A /* BoardCollectionModelView.swift in Sources */,
+				1E2AE0812215CBCB00170D1A /* BoardCollectionViewModel.swift in Sources */,
 				1E2AE085221709EE00170D1A /* MainViewController.swift in Sources */,
 				1E2AE0782215A95000170D1A /* BoardCollectionViewController.swift in Sources */,
 				1E2AE06322157BAC00170D1A /* AppDelegate.swift in Sources */,
@@ -312,6 +393,7 @@
 		};
 		1E2AE07522157BAD00170D1A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC882444080EBA1F321B4C05 /* Pods-fourinrowexperience.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -330,6 +412,7 @@
 		};
 		1E2AE07622157BAD00170D1A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 07999711BA3D13C9F1829996 /* Pods-fourinrowexperience.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

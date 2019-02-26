@@ -8,27 +8,27 @@
 
 import UIKit
 
-enum PieceState {
+enum PieceColor {
     case yellowCell
     case redCell
     case emptyCell
 }
 
 class Board {
-    var playerNames : [String]
-    var yellowTurn : Bool = false
-    var rows : [[PieceState]]
     static let numberOfRows = 7
     static let numberOfLines = 6
-    var winCells : [(row : Int, line : Int)] = []
     
+    var playerNames : [String]
+    var yellowTurn : Bool = false
+    var rows : [[PieceColor]]
+    var winCells : [(row : Int, line : Int)] = []
     let onTurnChange : (String, UIColor, UIColor) -> ()
     let onWin : ((String, UIColor) -> ())?
     
     init(player1 : String = "player1", player2 : String = "player2", onTurnChange: @escaping (String, UIColor, UIColor) -> (), onWin : @escaping (String, UIColor) -> ()) {
-        rows = Array.init(repeating: 1, count: Board.numberOfRows).map({ (_) -> [PieceState] in
-            return Array.init(repeating: 1, count: Board.numberOfLines).map({ (_) -> PieceState in
-                return PieceState.emptyCell
+        rows = Array.init(repeating: 1, count: Board.numberOfRows).map({ (_) -> [PieceColor] in
+            return Array.init(repeating: 1, count: Board.numberOfLines).map({ (_) -> PieceColor in
+                return PieceColor.emptyCell
             })
         })
         playerNames = [player1, player2]
@@ -36,9 +36,49 @@ class Board {
         self.onWin = onWin
     }
     
+    init(source: Board){
+        playerNames = source.playerNames
+        yellowTurn = source.yellowTurn
+        rows = source.rows
+        winCells = source.winCells
+        onWin = source.onWin
+        onTurnChange = source.onTurnChange
+    }
+    
+    init(){
+        playerNames = ["", ""]
+        rows = Array.init(repeating: 1, count: Board.numberOfRows).map({ (_) -> [PieceColor] in
+            return Array.init(repeating: 1, count: Board.numberOfLines).map({ (_) -> PieceColor in
+                return PieceColor.emptyCell
+            })
+        })
+        onWin = {(_, _) in return}
+        onTurnChange = {(_, _, _) in return}
+    }
+    
+    func play(rowIndex:Int) -> Board {
+        var lowestemptyIndex : Int?
+        let board = Board(source: self)
+        for cell in rows[rowIndex] {
+            if cell != .emptyCell {
+                break
+            }
+            lowestemptyIndex = lowestemptyIndex == nil ? 0 : lowestemptyIndex! + 1
+        }
+        guard let lowestIndex = lowestemptyIndex else {
+            return self
+        }
+        board.rows[rowIndex][lowestIndex] = self.getCurrentUserPiece()
+        board.checkWin(posPlay: (row:rowIndex, line:lowestIndex))
+        board.yellowTurn = !yellowTurn
+        let userDetails = getCurrentUserDetails()
+        board.onTurnChange(userDetails.pseudo, userDetails.color, userDetails.labelColor)
+        return board
+    }
+    
     // player1 : player[0] yellowTurn(false) red
     // player2 : player[1] yellowTurn(true) yellow
-    func getCurrentUserPiece() -> PieceState {
+    func getCurrentUserPiece() -> PieceColor {
         return yellowTurn ? .yellowCell : .redCell
     }
     
@@ -53,31 +93,14 @@ class Board {
         return (pseudo: playerNames[pseudoIndex], color: UIColor(named: colorName)!, labelColor : labelColor!)
     }
     
-    func play(rowIndex:Int) {
-        var lowestemptyIndex : Int?
-        for cell in rows[rowIndex] {
-            if cell != .emptyCell {
-                break
-            }
-            lowestemptyIndex = lowestemptyIndex == nil ? 0 : lowestemptyIndex! + 1
-        }
-        guard let lowestIndex = lowestemptyIndex else {
-            return
-        }
-        rows[rowIndex][lowestIndex] = self.getCurrentUserPiece()
-        checkWin(posPlay: (row:rowIndex, line:lowestIndex))
-        
-        yellowTurn = !yellowTurn
-        let userDetails = getCurrentUserDetails()
-        onTurnChange(userDetails.pseudo, userDetails.color, userDetails.labelColor)
-    }
-    
     //Check victory
     
     typealias PosInBoard = (row : Int, line : Int)
     
     func checkAxe(refCell: PosInBoard, indexesToCheck: [Int], getPosFromIndex : (_ index: Int) -> PosInBoard) -> [PosInBoard] {
         let pieceColor = rows[refCell.row][refCell.line]
+        
+        if (pieceColor == .emptyCell) { return [] }
         var stopCount = false
         return indexesToCheck.reduce([refCell]) {
             (checkCells, index) -> [(row : Int, line : Int)] in
@@ -101,7 +124,6 @@ class Board {
     func checkHorizontal(line: Int) -> Bool {
         let mandatoryRowToWin = 3
         // If this position in the line is empty no one can win the line
-        if rows[mandatoryRowToWin][line] == .emptyCell { return false }
         let refCell = (row : mandatoryRowToWin, line : line)
         let checkCells = checkAxe(refCell: refCell, indexesToCheck: [-1, -2, -3, 0, 1, 2, 3]) {
             return (row: refCell.row + $0, line: refCell.line)
@@ -116,7 +138,6 @@ class Board {
     func checkVertical(row: Int) -> Bool {
         let mandatoryLineToWin = 2
         // If this position in the row is empty no one can win the row
-        if rows[row][mandatoryLineToWin] == .emptyCell { return false }
         let refCell = (row : row, line : mandatoryLineToWin)
         let indexesToCheck = [-1, -2, 0, 1, 2, 3]
         let checkCells = checkAxe(refCell: refCell, indexesToCheck: indexesToCheck) {
@@ -136,7 +157,7 @@ class Board {
         let refCell = (row: pos.row + diffLine, line: mandatoryLineToWin)
         // No winning diagonal going to top right reaches (row:0, line:3)
         let checkRefCellMaxMin = refCell.row < Board.numberOfRows && refCell.row >= 0
-        if !checkRefCellMaxMin || rows[refCell.row][refCell.line] == .emptyCell || pos.row < 1 { return false }
+        if !checkRefCellMaxMin || pos.row < 1 { return false }
         let indexesToCheck = [-1, -2, -3, 0, 1, 2]
         let checkCells = checkAxe(refCell: refCell, indexesToCheck: indexesToCheck) {
             return (row: refCell.row + $0, line: refCell.line - $0)
@@ -155,7 +176,7 @@ class Board {
         let refCell = (row: pos.row - diffLine, line: mandatoryLineToWin)
         let checkRefCellMaxMin = refCell.row < Board.numberOfRows && refCell.row >= 0
         // No winning diagonal going to bottom right reaches (row:6, line:3)
-        if  !checkRefCellMaxMin || rows[refCell.row][refCell.line] == .emptyCell || pos.row > 5 { return false }
+        if  !checkRefCellMaxMin || pos.row > 5 { return false }
         let indexesToCheck = [-1, -2, 0, 1, 2, 3]
         let checkCells = checkAxe(refCell: refCell, indexesToCheck: indexesToCheck) {
             return (row: refCell.row + $0, line: refCell.line + $0)
@@ -168,14 +189,16 @@ class Board {
     }
     
     func checkWin(posPlay : PosInBoard) {
-        let winCase: () -> () = {
-            let userDetails = self.getCurrentUserDetails()
-            self.onWin?(userDetails.pseudo, userDetails.color)
+        var didWin = false
+        if self.checkVertical(row: posPlay.row) ||
+            self.checkHorizontal(line: posPlay.line) ||
+            self.checkDiagonalTopLeft(pos: posPlay) ||
+            self.checkDiagonalTopRight(pos: posPlay){
+            didWin = true
         }
-        if self.checkVertical(row: posPlay.row) { winCase(); return; }
-        if self.checkHorizontal(line: posPlay.line) { winCase(); return; }
-        if self.checkDiagonalTopLeft(pos: posPlay) { winCase(); return; }
-        if self.checkDiagonalTopRight(pos: posPlay) { winCase(); return;}
+        if !didWin { return }
+        let userDetails = self.getCurrentUserDetails()
+        self.onWin?(userDetails.pseudo, userDetails.color)
     }
     
 }
