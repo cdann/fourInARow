@@ -7,12 +7,12 @@
 //
 
 import RxSwift
+import RxCocoa
 import RxDataSources
 
 protocol ViewModel {
     associatedtype Input
     associatedtype Output
-    var input: Variable<Input> { get }
 }
 
 struct PieceSetup {
@@ -35,19 +35,19 @@ struct SectionOfPiece: SectionModelType {
 }
 
 class BoardCollectionViewModel: ViewModel {
-    
     typealias Input = Board
     typealias Output = [SectionOfPiece]
-    let input: Variable<Input>
-    let output: Variable<Output>
+    
+    let input: BehaviorRelay<Input>
+    let output: BehaviorSubject<Output>
     let disposeBag = DisposeBag()
     
-    init(board : Input) {
-        input = Variable(board)
-        output = Variable(BoardCollectionViewModel.boardToCells(board: board))
-        input.asObservable().subscribe(onNext: { (board) in
-            self.output.value = BoardCollectionViewModel.boardToCells(board: board)
-        }).disposed(by: disposeBag)
+    init(board: Input) {
+        input = BehaviorRelay(value: board)
+        output = BehaviorSubject(value:[])
+        input.asObservable().map ({ (board) -> Output in
+            return BoardCollectionViewModel.boardToCells(board: board)
+        }).bind(to: output).disposed(by: disposeBag)
     }
     
     static func boardToCells(board: Board) -> [SectionOfPiece] {

@@ -14,7 +14,6 @@ import RxDataSources
 class BoardCollectionViewController: UIViewController, UICollectionViewDelegate {
 
     @IBOutlet weak var collectionview : UICollectionView!
-    let disposeBag = DisposeBag()
     let datasource: RxCollectionViewSectionedReloadDataSource<SectionOfPiece> = RxCollectionViewSectionedReloadDataSource<SectionOfPiece>(
         configureCell: { (dataSource, collectionView, indexPath, pieceSetUp) -> UICollectionViewCell in
         let identifier = indexPath.row > 0 ? "emptyCell" : "redArrow"
@@ -24,15 +23,16 @@ class BoardCollectionViewController: UIViewController, UICollectionViewDelegate 
         }
         return cell
     })
-    var datasObservable: Observable<[SectionOfPiece]> = Observable.just([])
     
     func setViewModel(viewModel: BoardCollectionViewModel) {
         let datasObservable = viewModel.output.asObservable()
+        self.collectionview.dataSource = nil
         let reactiveCollection: Reactive<UICollectionView> = self.collectionview.rx
-        datasObservable.bind(to: reactiveCollection.items(dataSource: datasource)).disposed(by: disposeBag)
-        reactiveCollection.itemSelected.subscribe(onNext: { [weak self] indexPath in
-            viewModel.input.value = viewModel.input.value.play(asSource: indexPath.section)
-        }).disposed(by: disposeBag)
+        datasObservable.bind(to: reactiveCollection.items(dataSource: datasource)).disposed(by: viewModel.disposeBag)
+        reactiveCollection.itemSelected.subscribe(onNext: { indexPath in
+            let board = viewModel.input.value.play(rowIndex: indexPath.section)
+            viewModel.input.accept(board)
+        }).disposed(by: viewModel.disposeBag)
     }
     
     override func viewDidLoad() {
